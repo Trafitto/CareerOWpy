@@ -1,12 +1,12 @@
-# Overwatch Carrer Web Scraper
+# Overwatch career Web Scraper
 
-A simple script that searches for some data from the [overwatch carrer site](https://playoverwatch.com/en-us/career/pc/)
+A simple script that searches for some data from the [overwatch career site](https://playoverwatch.com/en-us/career/pc/)
 
 
 
 ## How to use:
 
-The script uses BeautifulSoup for scraping an Requests to get the page
+The script uses BeautifulSoup for scraping and Requests to get the page
 
 Add the battletag to be monitored to the Users.py file
 
