@@ -1,6 +1,6 @@
 # Overwatch career Web Scraper
 
-A simple script that searches for some data from the [overwatch career site](https://playoverwatch.com/en-us/career/pc/)
+A simple cli script that searches for some data from the [overwatch career site](https://playoverwatch.com/en-us/career/pc/)
 
 
 
@@ -8,30 +8,45 @@ A simple script that searches for some data from the [overwatch career site](htt
 
 The script uses BeautifulSoup for scraping and Requests to get the page
 
-Add the battletag to be monitored to the Users.py file
+Here are some commands:
 
-
-```
-users=[
-	{'name':'Nick-1234'},
-	{'name':'User-5679'},
-	
-]
+Add the battletag to be monitored to the Sqlite3 database file
 
 ```
+CareerOW.py -add Nickname-1234
+
+```
+
+For updating data
+```
+CareerOW.py -update
+
+```
+
+For showing the battletag
+
+```
+CareerOW.py -users
+
+```
+
+For showing the last data
+
+```
+CareerOW.py -data
+
+```
+
+
 Note: Change the url if you play on another region or platform
 
 
 ## What is that?:
 
 A simple web scraper to retrieve some useful information regarding Overwatch's competitive matches.
-To get an idea of ​​how quickly I go down to bronze
+To get an idea of ​​how quickly I go down to bronze.
+
+Since the last update I have turned this script into a cli utility
+
 
 Note: Overwatch does not have official Api yet
-
-
-	
-
-
-
-

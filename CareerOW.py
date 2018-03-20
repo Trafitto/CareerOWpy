@@ -1,55 +1,74 @@
-import requests
-from bs4 import BeautifulSoup
-from datetime import datetime
-startTime = datetime.now()
-from Users import users
+import os
+import sys
+from Scraper import Update
 from dbUtils import dbHelper
+
 db=dbHelper()
+print ('Career OW CLI\n')
 
-url='https://playoverwatch.com/en-us/career/pc/'
+def helpMsg():
+	print('\n')
+	print('-update Aggiorna il database')
+	print ('-add <battletag> Aggiunge un utente alla lista')
+	print ('-data Visualizza gli ultimi risultati presenti nel database')
+	print ('-users Visualizza battletag')
+	print ('-cleardb Cancella e ricrea tutte le tabelle del database (drop and create)')
+	print('-help Visualizza questo messaggio')
+	print('\n')
 
+def PrintLastData():
+	users=db.getLastData()
+	text=''
+	for user in users:
+		text+=user[0]+' rank:'+str(user[1])+ ' time played '+str(user[2]) +'\n'+'w /t /l  tot'+'\n'+str(user[4])+'/'+str(user[5])+'/'+str(user[6])+' '+str(user[3])+'\n'
+	return text
+def PritnUsers():
+	users=db.getUsers()
+	text=''
+	for u in users:
+		text+=u+'\n'
+	return text
+try:
+	command=sys.argv[1]
+except:
+	helpMsg()
+	sys.exit()
 
-for user in users:
+if command=='-help' or command=='-h':
+	helpMsg()
+elif command=='-update' or command=='-u':
+	#Scraping and update DB
+	Update()
 
-	r=requests.get(url+user['name'])
+elif command=='-add' or command=='-a':
+	user=''
+	try:
+		user=sys.argv[2]
+	except:
+		helpMsg()
+		print ('E necessario un battletag ex: Nickname-123')
 
-	data=r.text
+		sys.exit()
+	if user != None or user !='':
+		#Add user on DB
+		db.addUser(user)
+		print ('Aggiunto: ',user)
 
-	soup=BeautifulSoup(data,'html.parser')
+elif (command=='-users' or command=='-user' ):
+	print(PritnUsers())
 
-	RankElement=soup.find_all("div",class_="competitive-rank")
-	user['rank']=RankElement[0].div.get_text()
+elif (command=='-data' or command=='-d'):
+	print(PrintLastData())
 
-	compElement=soup.find_all("div",id='competitive')
+elif(command=='-cleardb'):
+	print ('Questa funzione cancellerà tutti i dati presenti sul database vuoi proseguire?')
+	choice=''
+	while(choice!='y' or choice!='n'):
+		choice=input("y/n: ")
+		if choice=='y':
+			db.DropAndCreateAll()
 
-	for e in compElement:
-		a=e.find('section',class_='content-box u-max-width-container career-stats-section')
-		c= a.find_all('div',class_='column xs-12 md-6 xl-4')
-
-		#c[n] -> Stat quads... (c[5] -> Game)
-
-		stat=[]
-		for p in c[5].find_all('tr'):
-			t=p.find_all('td')
-
-			for f in t:
-				stat.append(f.get_text())
-
-
-
-		user['time'],text=stat[1].split(' ') #pythonic way to get just the hours
-		user['totGame']=stat[3]
-		user['win']=stat[5]
-		user['tied']=stat[7]
-		user['lost']=stat[9]
-		print('->',user['name'])
-
-print('\nScraping running in: ')
-print(datetime.now() - startTime)
-print('\n')
-for user in users:
-	db.insertData(user['name'],int(user['rank']),int(user['time']),int(user['totGame']),int(user['win']),int(user['tied']),int(user['lost']))
-	print(user['name']+' rank:'+user['rank']+ ' time played '+user['time'] +'\n'+'w /t /l  tot'+'\n'+user['win']+'/'+user['tied']+'/'+user['lost']+' '+user['totGame'])
-
-print('\nTotal script running in: ')
-print(datetime.now() - startTime)
+			sys.exit()
+		elif (choice=='n'):
+			print ('Ok, ciao')
+			sys.exit()
