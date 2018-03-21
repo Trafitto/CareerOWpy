@@ -1,6 +1,7 @@
 import os
 import sys
 from Scraper import Update
+from Plotter import plotUser,plotAll
 from dbUtils import dbHelper
 
 db=dbHelper()
@@ -11,6 +12,8 @@ def helpMsg():
 	print('-update Aggiorna il database')
 	print ('-add <battletag> Aggiunge un utente alla lista')
 	print ('-data Visualizza gli ultimi risultati presenti nel database')
+	print ("-plot <battletag> Crea un grafico con l'andamento di quell'utente")
+	print ("-plotall Crea un grafico dell'andamento per ogni utente")
 	print ('-users Visualizza battletag')
 	print ('-cleardb Cancella e ricrea tutte le tabelle del database (drop and create)')
 	print('-help Visualizza questo messaggio')
@@ -72,3 +75,18 @@ elif(command=='-cleardb'):
 		elif (choice=='n'):
 			print ('Ok, ciao')
 			sys.exit()
+elif (command=='-plot'):
+	user=''
+	try:
+		user=sys.argv[2]
+	except:
+		helpMsg()
+		print ('E necessario un battletag ex: Nickname-123')
+
+		sys.exit()
+	if user != None or user !='':
+		#Add user on DB
+		plotUser(user)
+		sys.exit()
+elif(command=='-plotall'):
+	plotAll()

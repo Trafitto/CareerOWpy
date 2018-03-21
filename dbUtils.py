@@ -81,6 +81,14 @@ class dbHelper:
         return x
         #return [x[0] for x in self.conn.execute(query)]
 
+    def getLastUserData(self,battletag):
+        query='''
+            SELECT ranks,DATE(updated) FROM Career WHERE name=?  ORDER BY updated DESC LIMIT 20
+        '''
+        args=(battletag,)
+        #x=self.conn.execute(query,args)
+        return [x for x in self.conn.execute(query,args)]
+
     def insertData(self,name,ranks,playedTime,totGame,win,tied,lost):
         query='''
             INSERT INTO Career (name,ranks,playedTime,totGame,win,tied,lost,updated)
