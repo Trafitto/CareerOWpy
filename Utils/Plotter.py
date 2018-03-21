@@ -1,6 +1,6 @@
 #Frist time with matplotlib
 import matplotlib.pyplot as plt
-from dbUtils import dbHelper
+from Utils.dbUtils import dbHelper
 
 db=dbHelper()
 
@@ -21,7 +21,7 @@ def plotUser(user):
     plt.plot(update,rank, 'ro--')
     #plt.axis([0, 6, 0, 20])
 
-    plt.savefig('PlotImg/'+ user+'.png')
+    plt.savefig('./PlotImg/'+ user+'.png')
     plt.close()
     #plt.show()
 

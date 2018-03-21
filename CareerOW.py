@@ -1,8 +1,8 @@
 import os
 import sys
-from Scraper import Update
-from Plotter import plotUser,plotAll
-from dbUtils import dbHelper
+from Utils.Scraper import Update
+from Utils.Plotter import plotUser,plotAll
+from Utils.dbUtils import dbHelper
 
 db=dbHelper()
 print ('Career OW CLI\n')

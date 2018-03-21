@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 startTime = datetime.now()
 
-from dbUtils import dbHelper
+from Utils.dbUtils import dbHelper
 
 def Update(url='https://playoverwatch.com/en-us/career/pc/'):
     db=dbHelper()
