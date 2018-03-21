@@ -1,4 +1,6 @@
 #Frist time with matplotlib
+import matplotlib as mpl #Plotting without xserver
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 from Utils.dbUtils import dbHelper
 
