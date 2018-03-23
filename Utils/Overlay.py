@@ -17,8 +17,8 @@ def CreateImg(battletag):
 
         text='Actual rank:'+user['rank']+ '     Time played '+user['time'] +'\n'+'w  /t  /l   tot'+'\n'+user['win']+'/'+user['tied']+'/'+user['lost']+' '+user['totGame']
 
-        colorTxt=(0,0,0,255)
-        d.text((20,20),text,(0,0,0,255),font=font)
+
+        d.text((20,20),text,(255,255,255,255),font=font)
 
 
 
