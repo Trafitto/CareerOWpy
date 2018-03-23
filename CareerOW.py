@@ -2,11 +2,12 @@ import os
 import sys
 from Utils.Scraper import Update
 from Utils.Plotter import plotUser,plotAll
+from Utils.Overlay import CreateImg,CreateTxt
 from Utils.dbUtils import dbHelper
-
+import time
 db=dbHelper()
 print ('Career OW CLI\n')
-
+sleepTime=300 # in seconds
 def helpMsg():
 	print('\n')
 	print('-update Aggiorna il database')
@@ -14,6 +15,8 @@ def helpMsg():
 	print ('-data Visualizza gli ultimi risultati presenti nel database')
 	print ("-plot <battletag> Crea un grafico con l'andamento di quell'utente")
 	print ("-plotall Crea un grafico dell'andamento per ogni utente")
+	print ("-startoverlayimg <battletag> Aggiorna ogni "+sleepTime+" secondi un immagine utilizzabile come overlay per gli streamer")
+	print ("-startoverlaytxt <battletag> Aggiorna ogni "+sleepTime+" secondi un file di testo utilizzabile come overlay per gli streamer")
 	print ('-users Visualizza battletag')
 	print ('-cleardb Cancella e ricrea tutte le tabelle del database (drop and create)')
 	print('-help Visualizza questo messaggio')
@@ -90,3 +93,42 @@ elif (command=='-plot'):
 		sys.exit()
 elif(command=='-plotall'):
 	plotAll()
+elif(command=='-startoverlayimg'):
+	user=''
+	try:
+		user=sys.argv[2]
+	except:
+		helpMsg()
+		print ('E necessario un battletag ex: Nickname-123')
+
+		sys.exit()
+	if user != None or user !='':
+		print ('Attenzione i dati aggiornati in questo modo non saranno inseriti sul db')
+		print ('^C Per chiudere la procedura')
+		try:
+			while True:
+				CreateImg(user)
+				time.sleep(sleepTime) #prevent to many request
+
+		except KeyboardInterrupt:
+			print ('^C Ricevuto!')
+			sys.exit()
+elif(command=='-startoverlaytxt'):
+	user=''
+	try:
+		user=sys.argv[2]
+	except:
+		helpMsg()
+		print ('E necessario un battletag ex: Nickname-123')
+
+		sys.exit()
+	if user != None or user !='':
+		print ('Attenzione i dati aggiornati in questo modo non saranno inseriti sul db')
+		print ('^C Per chiudere la procedura')
+		try:
+			while True:
+				CreateTxt(user)
+				time.sleep(sleepTime) # prevent to many request
+		except KeyboardInterrupt:
+			print ('^C Ricevuto!')
+			sys.exit()

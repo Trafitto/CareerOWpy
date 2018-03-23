@@ -6,6 +6,10 @@ A simple cli script that searches for some data from the [overwatch career site]
 
 ## How to use:
 
+Add 2 folder in the main directory:
+  * Plotimg
+  * Overlay
+
 The script uses BeautifulSoup for scraping and Requests to get the page
 
 Here are some commands:
@@ -39,6 +43,29 @@ CareerOW.py -data
 
 
 Note: Change the url if you play on another region or platform
+
+## Overlay for Streamers:
+
+A friend asked me if I could add something that would update the overlay while streaming so I added 2 commands:
+
+Update every tot seconds an image with a green background
+
+```
+CareerOW.py -startoverlayimg Nickname-1234
+
+```
+Update every tot seconds a .txt file
+
+```
+CareerOW.py -startoverlaytxt Nickname-1234
+
+```
+
+
+## Telegram Bot:
+
+I added the basic structure to use the cli via bot.
+Unfortunately I had some problems with hosting so nothing is ready yet for now.
 
 
 ## What is that?:
