@@ -15,9 +15,10 @@ def helpMsg():
 	print ('-data Visualizza gli ultimi risultati presenti nel database')
 	print ("-plot <battletag> Crea un grafico con l'andamento di quell'utente")
 	print ("-plotall Crea un grafico dell'andamento per ogni utente")
-	print ("-startoverlayimg <battletag> Aggiorna ogni "+sleepTime+" secondi un immagine utilizzabile come overlay per gli streamer")
-	print ("-startoverlaytxt <battletag> Aggiorna ogni "+sleepTime+" secondi un file di testo utilizzabile come overlay per gli streamer")
+	print ("-startoverlayimg <battletag> Aggiorna ogni "+str(sleepTime)+" secondi un immagine utilizzabile come overlay per gli streamer")
+	print ("-startoverlaytxt <battletag> Aggiorna ogni "+str(sleepTime)+" secondi un file di testo utilizzabile come overlay per gli streamer")
 	print ('-users Visualizza battletag')
+	print ("-removeuser <battletag> Rimuove l'utente con quel battletag")
 	print ('-cleardb Cancella e ricrea tutte le tabelle del database (drop and create)')
 	print('-help Visualizza questo messaggio')
 	print('\n')
@@ -78,6 +79,29 @@ elif(command=='-cleardb'):
 		elif (choice=='n'):
 			print ('Ok, ciao')
 			sys.exit()
+elif(command=='-removeuser'):
+	user=''
+	try:
+		user=sys.argv[2]
+	except:
+		helpMsg()
+		print ('E necessario un battletag ex: Nickname-123')
+
+		sys.exit()
+	if user != None or user !='':
+		#Add user on DB
+
+		print ("Questa funzione cancellerà l'utente selezionato vuoi proseguire")
+		choice=''
+		while(choice!='y' or choice!='n'):
+			choice=input("y/n: ")
+			if choice=='y':
+				db.removeUser(user)
+				print ('Rimosso',user)
+				sys.exit()
+			elif (choice=='n'):
+				print ('Ok, ciao')
+				sys.exit()
 elif (command=='-plot'):
 	user=''
 	try:

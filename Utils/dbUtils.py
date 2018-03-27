@@ -66,6 +66,14 @@ class dbHelper:
         self.conn.execute(query,args)
         self.conn.commit()
 
+    def removeUser(self,name):
+        query='''
+            DELETE FROM Users WHERE name=?
+        '''
+        args=(name,)
+        self.conn.execute(query,args)
+        self.conn.commit()
+
     def getUsers(self):
         query='''
             SELECT name from Users
@@ -83,7 +91,7 @@ class dbHelper:
 
     def getLastUserData(self,battletag):
         query='''
-            SELECT ranks,DATE(updated) FROM Career WHERE name=?  ORDER BY updated DESC LIMIT 20
+            SELECT ranks,DATE(updated) FROM Career WHERE name=?  ORDER BY updated DESC LIMIT 10
         '''
         args=(battletag,)
         #x=self.conn.execute(query,args)
