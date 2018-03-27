@@ -2,3 +2,6 @@ CareerDB.sqlite3
 __pycache__
 Utils/__pycache__
 TelegramBot/Secrets.py
+CareerOW.spec
+build
+dist
