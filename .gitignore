@@ -5,3 +5,5 @@ TelegramBot/Secrets.py
 CareerOW.spec
 build
 dist
+PlotImg/*
+Overlay/*
