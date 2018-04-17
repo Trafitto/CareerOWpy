@@ -34,12 +34,29 @@ def scraper(url,battletag):
                 stat.append(f.get_text())
 
 
+        ### Prevent no data error
+        user['time']=0
+        user['totGame']=0
+        user['win']=0
+        user['tied']=0
+        user['lost']=0
+        for i in range(0,len(stat)):
+            if stat[i]=='Time Played':
+                user['time'],text=stat[i+1].split(' ') #pythonic way to get just the hours
+            if stat[i]=='Games Played':
+                user['totGame']=stat[i+1]
+            if stat[i]=='Games Won':
+                user['win']=stat[i+1]
+            if stat[i]=='Games Tied':
+                user['tied']=stat[i+1]
+            if stat[i]=='Games Lost':
+                user['lost']=stat[i+1]
 
-        user['time'],text=stat[1].split(' ') #pythonic way to get just the hours
-        user['totGame']=stat[3]
-        user['win']=stat[5]
-        user['tied']=stat[7]
-        user['lost']=stat[9]
+        # user['time'],text=stat[1].split(' ') #pythonic way to get just the hours
+        # user['totGame']=stat[3]
+        # user['win']=stat[5]
+        # user['tied']=stat[7]
+        # user['lost']=stat[9]
 
         return user
 

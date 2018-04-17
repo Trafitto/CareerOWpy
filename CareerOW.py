@@ -156,3 +156,6 @@ elif(command=='-startoverlaytxt'):
 		except KeyboardInterrupt:
 			print ('^C Ricevuto!')
 			sys.exit()
+else:
+	print('Comando non riconosciuto\n')
+	helpMsg()
