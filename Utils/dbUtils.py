@@ -53,6 +53,7 @@ class dbHelper:
                 death INTEGER,
                 soloKill INTEGER,
                 elimination INTEGER,
+                healingDone INTEGER,
                 updated DATE
             )
 
@@ -135,11 +136,18 @@ class dbHelper:
         self.conn.execute(query, args)
         self.conn.commit()
 
-    def insertdailyData(self,name,ranks,playedTime,totGame,win,tied,lost,death,soloKill,elimination):
+    def insertdailyData(self,name,ranks,playedTime,totGame,win,tied,lost,death,soloKill,elimination,healingDone):
         query='''
-            INSERT INTO Dailystat (name,ranks,playedTime,totGame,win,tied,lost,death,soloKill,elimination,updated)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?)
+            INSERT INTO Dailystat (name,ranks,playedTime,totGame,win,tied,lost,death,soloKill,elimination,healingDone,updated)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
         '''
-        args = (name,ranks,playedTime,totGame,win,tied,lost,death,soloKill,elimination,datetime.datetime.now().date() )
+        args = (name,ranks,playedTime,totGame,win,tied,lost,death,soloKill,elimination,healingDone,datetime.datetime.now().date() )
         self.conn.execute(query, args)
         self.conn.commit()
+
+    def getDailyData(self,battletag):
+        query='''
+            SELECT * FROM Dailystat WHERE name=? and updated=? LIMIT 1
+        '''
+        args=(battletag,datetime.datetime.now().date())
+        return [x for x in self.conn.execute(query,args)]

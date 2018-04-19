@@ -4,6 +4,17 @@ from datetime import datetime
 
 #rgb(15, 226, 124)
 
+def textTowrite(battletag):
+    user=UpdateOverlay(battletag)
+    text=''
+    if user!=None:
+
+        text=text+'Actual rank:'+str(user['rank'])+ '     Time played '+str(user['time']) +'\nTotal stat:  '+'\n          w  /t  /l   tot'+'\n'+str(user['win'])+'/'+str(user['tied'])+'/'+str(user['lost'])+' '+str(user['totGame'])
+        text=text+'\nDaily stat:  \n          w  /t  /l   '+'\n'+str(user['winD'])+'/'+str(user['tiedD'])+'/'+str(user['lostD'])+'\nDeath: '+str(user['deathD'])+' Solo Kill: '+str(user['soloKillD'])+'\nElimination: '+str(user['eliminationD'])
+        text=text+' Healing Done: '+str(user['healingDoneD'])
+    else:
+        print('Nessun dato trovato')
+    return text
 def CreateImg(battletag):
 
     size=480,480
@@ -12,32 +23,24 @@ def CreateImg(battletag):
 
     font=ImageFont.truetype('font\impact.ttf',25)
     d=ImageDraw.Draw(im)
-    user=UpdateOverlay(battletag)
-    if user!=None:
+    text=textTowrite(battletag)
 
-        text='Actual rank:'+user['rank']+ '     Time played '+user['time'] +'\n'+'w  /t  /l   tot'+'\n'+user['win']+'/'+user['tied']+'/'+user['lost']+' '+user['totGame']
-
-
-        d.text((20,20),text,(255,255,255,255),font=font)
+    d.text((20,20),text,(255,255,255,255),font=font)
 
 
 
-        im.save('Overlay/Overlay-'+user['name']+".png")
-        startTime = datetime.now()
-        print('Overlay aggiornato '+str(startTime))
-    else:
-        print('Nessun dato trovato')
+    im.save('Overlay/Overlay-'+battletag+".png")
+    startTime = datetime.now()
+    print('Overlay aggiornato '+str(startTime))
+
+
 
 def CreateTxt(battletag):
+    text=textTowrite(battletag)
+    out_file = "Overlay/Overlay-"+battletag+".txt"
 
-    user=UpdateOverlay(battletag)
-    if user!=None:
-        out_file = "Overlay/Overlay-"+user['name']+".txt"
-        text='Actual rank:'+user['rank']+ '     Time played '+user['time'] +'\n'+'w  /t  /l   tot'+'\n'+user['win']+'/'+user['tied']+'/'+user['lost']+' '+user['totGame']
-        with open(out_file, 'w') as f:
-            f.write(text)
-        f.close()
-        startTime = datetime.now()
-        print('Overlay aggiornato ' +str(startTime))
-    else:
-        print('Nessun dato trovato')
+    with open(out_file, 'w') as f:
+        f.write(text)
+    f.close()
+    startTime = datetime.now()
+    print('Overlay aggiornato ' +str(startTime))

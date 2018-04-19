@@ -37,6 +37,11 @@ def scraper(url,battletag):
             t=p.find_all('td')
             for f in t:
                 stat.append(f.get_text())
+        ### Assist quads
+        for p in c[1].find_all('tr'):
+            t=p.find_all('td')
+            for f in t:
+                stat.append(f.get_text())
 
         ### Prevent no data error
         user['time']=0
@@ -47,7 +52,17 @@ def scraper(url,battletag):
         user['death']=0
         user['soloKill']=0
         user['elimination']=0
+        user['healingDone']=0
+        ### Daily record
+        user['winD']=0
+        user['tiedD']=0
+        user['lostD']=0
+        user['deathD']=0
+        user['soloKillD']=0
+        user['eliminationD']=0
+        user['healingDoneD']=0
         for i in range(0,len(stat)):
+            ### Game quads
             if stat[i]=='Time Played' or stat[i]=='Tempo di gioco':
                 user['time'],text=stat[i+1].split(' ') #pythonic way to get just the hours
             if stat[i]=='Games Played' or stat[i]=='Partite giocate':
@@ -58,25 +73,51 @@ def scraper(url,battletag):
                 user['tied']=stat[i+1]
             if stat[i]=='Games Lost' or stat[i]=='Partite perse' :
                 user['lost']=stat[i+1]
-
+            ### Combat quads
             if stat[i]=='Deaths' or stat[i]=='Morti' :
                 user['death']=stat[i+1]
             if stat[i]=='Solo Kills' or stat[i]=='Uccisioni solitarie' :
                 user['soloKill']=stat[i+1]
             if stat[i]=='Eliminations' or stat[i]=='Eliminazioni' :
                 user['elimination']=stat[i+1]
-        # user['time'],text=stat[1].split(' ') #pythonic way to get just the hours
-        # user['totGame']=stat[3]
-        # user['win']=stat[5]
-        # user['tied']=stat[7]
-        # user['lost']=stat[9]
+            ### Assist quads
+            if stat[i]=='Healing Done' or stat[i]=='Cure fornite' :
+                user['healingDone']=stat[i+1]
+
 
         return user
 
 def UpdateOverlay(battletag,url='https://playoverwatch.com/it-it/career/pc/'):
     user={}
+    dailyU={}
+    db=dbHelper()
+
     try:
         user=scraper(url,battletag)
+
+        dailyU=db.getDailyData(battletag)
+
+        if dailyU is None or len(dailyU)<=0:
+
+            db.insertdailyData(user['name'],int(user['rank']),int(user['time']),int(user['totGame'])
+                ,int(user['win']),int(user['tied']),int(user['lost']),int(user['death'].replace('.','')),int(user['soloKill'].replace('.','')),int(user['elimination'].replace('.','')),int(user['healingDone'].replace('.','')))
+        else:
+            #### TODO FIX THIS
+            print (dailyU)
+            for daily in dailyU:
+                user['winD']=user['win']-daily['win']
+                user['tiedD']=user['tied']-daily['tied']
+                user['lostD']=user['lost']-daily['lost']
+                user['deathD']=user['death']-daily['death']
+                user['soloKillD']=user['soloKill']-daily['soloKill']
+                user['eliminationD']=user['elimination']-daily['elimination']
+                user['healingDoneD']=user['healingDone']-daily['healingDone']
+
+        ### TODO:
+        ### Controlla con una select se esiste già un record di oggi sulla tabella giornaliera
+        ### Se non esiste inserisci
+        ### Se esiste selezionalo e sottrai aggiungi poi a user il risultato, user['daily...']
+
     except Exception as e :
         print('Errore!\n'+str(e))
     print('\nScraping running in: ')
