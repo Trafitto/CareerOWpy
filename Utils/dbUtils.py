@@ -38,6 +38,29 @@ class dbHelper:
             )
         ''')
         self.conn.commit()
+        ## Create new table only for daily records for overlay
+        cursor=self.conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS Dailystat(
+                id INTEGER PRIMARY KEY,
+                name TEXT,
+                ranks INTEGER,
+                playedTime INTEGER,
+                totGame INTEGER,
+                win INTEGER,
+                tied INTEGER,
+                lost INTEGER,
+                death INTEGER,
+                soloKill INTEGER,
+                elimination INTEGER,
+                updated DATE
+            )
+
+
+        ''')
+        self.conn.commit()
+
+
     def DropAndCreateAll(self):
         self.DropTableCareer()
         self.DropTableUsers()
@@ -47,6 +70,12 @@ class dbHelper:
         cursor=self.conn.cursor()
         cursor.execute('''
             DROP TABLE Career
+        ''')
+        self.conn.commit()
+
+        cursor=self.conn.cursor()
+        cursor.execute('''
+            DROP TABLE Dailystat
         ''')
         self.conn.commit()
 
@@ -103,5 +132,14 @@ class dbHelper:
             VALUES (?,?,?,?,?,?,?,?)
         '''
         args = (name,ranks,playedTime,totGame,win,tied,lost,datetime.datetime.now() )
+        self.conn.execute(query, args)
+        self.conn.commit()
+
+    def insertdailyData(self,name,ranks,playedTime,totGame,win,tied,lost,death,soloKill,elimination):
+        query='''
+            INSERT INTO Dailystat (name,ranks,playedTime,totGame,win,tied,lost,death,soloKill,elimination,updated)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?)
+        '''
+        args = (name,ranks,playedTime,totGame,win,tied,lost,death,soloKill,elimination,datetime.datetime.now().date() )
         self.conn.execute(query, args)
         self.conn.commit()
