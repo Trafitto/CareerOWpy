@@ -27,12 +27,16 @@ def scraper(url,battletag):
         #c[n] -> Stat quads... (c[5] -> Game)
 
         stat=[]
+        ## Game quads
         for p in c[5].find_all('tr'):
             t=p.find_all('td')
-
             for f in t:
                 stat.append(f.get_text())
-
+        ## COMBAT quads
+        for p in c[0].find_all('tr'):
+            t=p.find_all('td')
+            for f in t:
+                stat.append(f.get_text())
 
         ### Prevent no data error
         user['time']=0
@@ -40,18 +44,27 @@ def scraper(url,battletag):
         user['win']=0
         user['tied']=0
         user['lost']=0
+        user['death']=0
+        user['soloKill']=0
+        user['elimination']=0
         for i in range(0,len(stat)):
-            if stat[i]=='Time Played':
+            if stat[i]=='Time Played' or stat[i]=='Tempo di gioco':
                 user['time'],text=stat[i+1].split(' ') #pythonic way to get just the hours
-            if stat[i]=='Games Played':
+            if stat[i]=='Games Played' or stat[i]=='Partite giocate':
                 user['totGame']=stat[i+1]
-            if stat[i]=='Games Won':
+            if stat[i]=='Games Won' or stat[i]=='Partite vinte':
                 user['win']=stat[i+1]
-            if stat[i]=='Games Tied':
+            if stat[i]=='Games Tied' or stat[i]=='Partite pareggiate':
                 user['tied']=stat[i+1]
-            if stat[i]=='Games Lost':
+            if stat[i]=='Games Lost' or stat[i]=='Partite perse' :
                 user['lost']=stat[i+1]
 
+            if stat[i]=='Deaths' or stat[i]=='Morti' :
+                user['death']=stat[i+1]
+            if stat[i]=='Solo Kills' or stat[i]=='Uccisioni solitarie' :
+                user['soloKill']=stat[i+1]
+            if stat[i]=='Eliminations' or stat[i]=='Eliminazioni' :
+                user['elimination']=stat[i+1]
         # user['time'],text=stat[1].split(' ') #pythonic way to get just the hours
         # user['totGame']=stat[3]
         # user['win']=stat[5]
@@ -60,7 +73,7 @@ def scraper(url,battletag):
 
         return user
 
-def UpdateOverlay(battletag,url='https://playoverwatch.com/en-us/career/pc/'):
+def UpdateOverlay(battletag,url='https://playoverwatch.com/it-it/career/pc/'):
     user={}
     try:
         user=scraper(url,battletag)
@@ -71,7 +84,7 @@ def UpdateOverlay(battletag,url='https://playoverwatch.com/en-us/career/pc/'):
     print('\n')
     return user
 
-def Update(url='https://playoverwatch.com/en-us/career/pc/'):
+def Update(url='https://playoverwatch.com/it-it/career/pc/'):
     db=dbHelper()
 
     users=db.getUsers()
