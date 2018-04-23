@@ -9,8 +9,8 @@ def textTowrite(battletag):
     text=''
     if user!=None:
 
-        text=text+'Actual rank:'+str(user['rank'])+ '     Time played '+str(user['time']) +'\nTotal stat:  '+'\n          w  /t  /l   tot'+'\n'+str(user['win'])+'/'+str(user['tied'])+'/'+str(user['lost'])+' '+str(user['totGame'])
-        text=text+'\nDaily stat:  \n          w  /t  /l   '+'\n'+str(user['winD'])+'/'+str(user['tiedD'])+'/'+str(user['lostD'])+'\nDeath: '+str(user['deathD'])+' Solo Kill: '+str(user['soloKillD'])+'\nElimination: '+str(user['eliminationD'])
+        text=text+'Actual rank:'+str(user['rank'])+ '     Time played '+str(user['time']) +'\nTotal stat:  '+'\n          w   /t   /l    tot'+'\n           '+str(user['win'])+'/'+str(user['tied'])+'/'+str(user['lost'])+' '+str(user['totGame'])
+        text=text+'\nDaily stat:  \n          w   /t   /l    '+'\n           '+str(user['winD'])+'/'+str(user['tiedD'])+'/'+str(user['lostD'])+'\n           Death: '+str(user['deathD'])+' Solo Kill: '+str(user['soloKillD'])+'\n           Elimination: '+str(user['eliminationD'])
         text=text+' Healing Done: '+str(user['healingDoneD'])
     else:
         print('Nessun dato trovato')

@@ -61,28 +61,29 @@ def scraper(url,battletag):
         user['soloKillD']=0
         user['eliminationD']=0
         user['healingDoneD']=0
+        ### .replace('.','') when number reach 1000> the Ow site use . for separate 
         for i in range(0,len(stat)):
             ### Game quads
             if stat[i]=='Time Played' or stat[i]=='Tempo di gioco':
                 user['time'],text=stat[i+1].split(' ') #pythonic way to get just the hours
             if stat[i]=='Games Played' or stat[i]=='Partite giocate':
-                user['totGame']=stat[i+1]
+                user['totGame']=stat[i+1].replace('.','')
             if stat[i]=='Games Won' or stat[i]=='Partite vinte':
-                user['win']=stat[i+1]
+                user['win']=stat[i+1].replace('.','')
             if stat[i]=='Games Tied' or stat[i]=='Partite pareggiate':
-                user['tied']=stat[i+1]
+                user['tied']=stat[i+1].replace('.','')
             if stat[i]=='Games Lost' or stat[i]=='Partite perse' :
-                user['lost']=stat[i+1]
+                user['lost']=stat[i+1].replace('.','')
             ### Combat quads
             if stat[i]=='Deaths' or stat[i]=='Morti' :
-                user['death']=stat[i+1]
+                user['death']=stat[i+1].replace('.','')
             if stat[i]=='Solo Kills' or stat[i]=='Uccisioni solitarie' :
-                user['soloKill']=stat[i+1]
+                user['soloKill']=stat[i+1].replace('.','')
             if stat[i]=='Eliminations' or stat[i]=='Eliminazioni' :
-                user['elimination']=stat[i+1]
+                user['elimination']=stat[i+1].replace('.','')
             ### Assist quads
             if stat[i]=='Healing Done' or stat[i]=='Cure fornite' :
-                user['healingDone']=stat[i+1]
+                user['healingDone']=stat[i+1].replace('.','')
 
 
         return user
@@ -100,18 +101,18 @@ def UpdateOverlay(battletag,url='https://playoverwatch.com/it-it/career/pc/'):
         if dailyU is None or len(dailyU)<=0:
 
             db.insertdailyData(user['name'],int(user['rank']),int(user['time']),int(user['totGame'])
-                ,int(user['win']),int(user['tied']),int(user['lost']),int(user['death'].replace('.','')),int(user['soloKill'].replace('.','')),int(user['elimination'].replace('.','')),int(user['healingDone'].replace('.','')))
+                ,int(user['win']),int(user['tied']),int(user['lost']),int(user['death']),int(user['soloKill']),int(user['elimination']),int(user['healingDone']))
         else:
-            #### TODO FIX THIS
-            print (dailyU)
+
             for daily in dailyU:
-                user['winD']=user['win']-daily['win']
-                user['tiedD']=user['tied']-daily['tied']
-                user['lostD']=user['lost']-daily['lost']
-                user['deathD']=user['death']-daily['death']
-                user['soloKillD']=user['soloKill']-daily['soloKill']
-                user['eliminationD']=user['elimination']-daily['elimination']
-                user['healingDoneD']=user['healingDone']-daily['healingDone']
+
+                user['winD']=int(user['win'])-int(daily[5])
+                user['tiedD']=int(user['tied'])-int(daily[6])
+                user['lostD']=int(user['lost'])-int(daily[7])
+                user['deathD']=int(user['death'])-int(daily[8])
+                user['soloKillD']=int(user['soloKill'])-int(daily[9])
+                user['eliminationD']=int(user['elimination'])-int(daily[10])
+                user['healingDoneD']=int(user['healingDone'])-int(daily[11])
 
         ### TODO:
         ### Controlla con una select se esiste già un record di oggi sulla tabella giornaliera
