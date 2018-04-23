@@ -6,6 +6,12 @@ from Utils.Overlay import CreateImg,CreateTxt
 from Utils.dbUtils import dbHelper
 import time
 db=dbHelper()
+
+if not os.path.exists('Overlay'):
+    os.makedirs('Overlay')
+if not os.path.exists('PlotImg'):
+    os.makedirs('PlotImg')
+
 print ('Career OW CLI\n')
 sleepTime=300 # in seconds
 def helpMsg():
@@ -15,8 +21,8 @@ def helpMsg():
 	print ('-data Visualizza gli ultimi risultati presenti nel database')
 	print ("-plot <battletag> Crea un grafico con l'andamento di quell'utente")
 	print ("-plotall Crea un grafico dell'andamento per ogni utente")
-	print ("-startoverlayimg <battletag> Aggiorna ogni "+str(sleepTime)+" secondi un immagine utilizzabile come overlay per gli streamer")
-	print ("-startoverlaytxt <battletag> Aggiorna ogni "+str(sleepTime)+" secondi un file di testo utilizzabile come overlay per gli streamer")
+	print ("-soimg <battletag> Aggiorna ogni "+str(sleepTime)+" secondi un immagine utilizzabile come overlay per gli streamer")
+	print ("-sotxt <battletag> Aggiorna ogni "+str(sleepTime)+" secondi un file di testo utilizzabile come overlay per gli streamer")
 	print ('-users Visualizza battletag')
 	print ("-removeuser <battletag> Rimuove l'utente con quel battletag")
 	print ('-cleardb Cancella e ricrea tutte le tabelle del database (drop and create)')
@@ -45,6 +51,7 @@ if command=='-help' or command=='-h':
 	helpMsg()
 elif command=='-update' or command=='-u':
 	#Scraping and update DB
+	print('Aggiornamento dati in corso...')
 	Update()
 
 elif command=='-add' or command=='-a':
@@ -113,11 +120,13 @@ elif (command=='-plot'):
 		sys.exit()
 	if user != None or user !='':
 		#Add user on DB
+		print('Generazione grafico in corso...')
 		plotUser(user)
 		sys.exit()
 elif(command=='-plotall'):
+	print('Generazione grafici in corso...')
 	plotAll()
-elif(command=='-startoverlayimg'):
+elif(command=='-startoverlayimg' or command=='-soimg'):
 	user=''
 	try:
 		user=sys.argv[2]
@@ -137,7 +146,7 @@ elif(command=='-startoverlayimg'):
 		except KeyboardInterrupt:
 			print ('^C Ricevuto!')
 			sys.exit()
-elif(command=='-startoverlaytxt'):
+elif(command=='-startoverlaytxt' or command=='-sotxt'):
 	user=''
 	try:
 		user=sys.argv[2]
