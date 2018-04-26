@@ -4,14 +4,20 @@ from datetime import datetime
 
 #rgb(15, 226, 124)
 
-def textTowrite(battletag):
+def textTowrite(battletag,daily=False,inline=False):
     user=UpdateOverlay(battletag)
     text=''
     if user!=None:
+        if daily ==False and inline==False:
+            text=''
+            text=text+'Actual rank:'+str(user['rank'])+ '     Time played '+str(user['time']) +'\nTotal stat:  '+'\n          w   /t   /l    tot'+'\n           '+str(user['win'])+'/'+str(user['tied'])+'/'+str(user['lost'])+' '+str(user['totGame'])
+            text=text+'\nDaily stat:  \n          w   /t   /l    '+'\n           '+str(user['winD'])+'/'+str(user['tiedD'])+'/'+str(user['lostD'])+'\n           Death: '+str(user['deathD'])+' Solo Kill: '+str(user['soloKillD'])+'\n           Elimination: '+str(user['eliminationD'])
+            text=text+' Healing Done: '+str(user['healingDoneD'])
+        elif daily==False and inline ==True:
+            text=''
+            text=text+'Actual rank:'+str(user['rank'])+ '     Time played '+str(user['time']) +' Total stat:  '+'Win: '+ str(user['win'])+'  Tied: '+str(user['tied'])+'  Lost: '+str(user['lost'])+'  Total: '+str(user['totGame'])
 
-        text=text+'Actual rank:'+str(user['rank'])+ '     Time played '+str(user['time']) +'\nTotal stat:  '+'\n          w   /t   /l    tot'+'\n           '+str(user['win'])+'/'+str(user['tied'])+'/'+str(user['lost'])+' '+str(user['totGame'])
-        text=text+'\nDaily stat:  \n          w   /t   /l    '+'\n           '+str(user['winD'])+'/'+str(user['tiedD'])+'/'+str(user['lostD'])+'\n           Death: '+str(user['deathD'])+' Solo Kill: '+str(user['soloKillD'])+'\n           Elimination: '+str(user['eliminationD'])
-        text=text+' Healing Done: '+str(user['healingDoneD'])
+
     else:
         print('Nessun dato trovato')
     return text
@@ -36,7 +42,7 @@ def CreateImg(battletag):
 
 
 def CreateTxt(battletag):
-    text=textTowrite(battletag)
+    text=textTowrite(battletag,False,True)
     out_file = "Overlay/Overlay-"+battletag+".txt"
 
     with open(out_file, 'w') as f:
