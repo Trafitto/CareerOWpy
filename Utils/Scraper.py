@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
-startTime = datetime.now()
+
 
 from Utils.dbUtils import dbHelper
 
@@ -9,6 +9,26 @@ from Utils.dbUtils import dbHelper
 def scraper(url,battletag):
     user={}
     user['name']=battletag
+    ### Prevent no data error
+    ### User init fast way
+    user['rank']=0
+    user['time']=0
+    user['totGame']=0
+    user['win']=0
+    user['tied']=0
+    user['lost']=0
+    user['death']=0
+    user['soloKill']=0
+    user['elimination']=0
+    user['healingDone']=0
+    ### Daily record
+    user['winD']=0
+    user['tiedD']=0
+    user['lostD']=0
+    user['deathD']=0
+    user['soloKillD']=0
+    user['eliminationD']=0
+    user['healingDoneD']=0
     r=requests.get(url+user['name'])
 
     data=r.text
@@ -16,7 +36,8 @@ def scraper(url,battletag):
     soup=BeautifulSoup(data,'html.parser')
 
     RankElement=soup.find_all("div",class_="competitive-rank")
-    user['rank']=RankElement[0].div.get_text()
+    if RankElement:
+        user['rank']=RankElement[0].div.get_text()
 
     compElement=soup.find_all("div",id='competitive')
 
@@ -27,11 +48,6 @@ def scraper(url,battletag):
         #c[n] -> Stat quads... (c[5] -> Game)
 
         stat=[]
-        ## Game quads
-        for p in c[5].find_all('tr'):
-            t=p.find_all('td')
-            for f in t:
-                stat.append(f.get_text())
         ## COMBAT quads
         for p in c[0].find_all('tr'):
             t=p.find_all('td')
@@ -42,26 +58,15 @@ def scraper(url,battletag):
             t=p.find_all('td')
             for f in t:
                 stat.append(f.get_text())
+        ## Game quads
+        for p in c[5].find_all('tr'):
+            t=p.find_all('td')
+            for f in t:
+                stat.append(f.get_text())
 
-        ### Prevent no data error
-        user['time']=0
-        user['totGame']=0
-        user['win']=0
-        user['tied']=0
-        user['lost']=0
-        user['death']=0
-        user['soloKill']=0
-        user['elimination']=0
-        user['healingDone']=0
-        ### Daily record
-        user['winD']=0
-        user['tiedD']=0
-        user['lostD']=0
-        user['deathD']=0
-        user['soloKillD']=0
-        user['eliminationD']=0
-        user['healingDoneD']=0
-        ### .replace('.','') when number reach 1000> the Ow site use . for separate 
+
+
+        ### .replace('.','') when number reach 1000> the Ow site use . for separate
         for i in range(0,len(stat)):
             ### Game quads
             if stat[i]=='Time Played' or stat[i]=='Tempo di gioco':
@@ -88,7 +93,31 @@ def scraper(url,battletag):
 
         return user
 
+
+
+def Update(url='https://playoverwatch.com/it-it/career/pc/'):
+    startTime = datetime.now()
+    db=dbHelper()
+
+    users=db.getUsers()
+
+    if users!= None:
+        for u in users:
+            user={}
+            user=scraper(url,u)
+            # Add data on DB
+            db.insertData(user['name'],int(user['rank']),int(user['time']),int(user['totGame']),int(user['win']),int(user['tied']),int(user['lost']))
+
+        print('\nScraping running in: ')
+        print(datetime.now() - startTime)
+        print('\n')
+    else:
+        print ('Nessun battletag trovato')
+
+
+### This function will be deprecated because the Ow site does not update the statistics in real time
 def UpdateOverlay(battletag,url='https://playoverwatch.com/it-it/career/pc/'):
+    startTime = datetime.now()
     user={}
     dailyU={}
     db=dbHelper()
@@ -96,10 +125,11 @@ def UpdateOverlay(battletag,url='https://playoverwatch.com/it-it/career/pc/'):
     try:
         user=scraper(url,battletag)
 
+        ### Check for daily records
         dailyU=db.getDailyData(battletag)
 
         if dailyU is None or len(dailyU)<=0:
-
+            ### Insert on daily table (once a day)
             db.insertdailyData(user['name'],int(user['rank']),int(user['time']),int(user['totGame'])
                 ,int(user['win']),int(user['tied']),int(user['lost']),int(user['death']),int(user['soloKill']),int(user['elimination']),int(user['healingDone']))
         else:
@@ -114,39 +144,9 @@ def UpdateOverlay(battletag,url='https://playoverwatch.com/it-it/career/pc/'):
                 user['eliminationD']=int(user['elimination'])-int(daily[10])
                 user['healingDoneD']=int(user['healingDone'])-int(daily[11])
 
-        ### TODO:
-        ### Controlla con una select se esiste già un record di oggi sulla tabella giornaliera
-        ### Se non esiste inserisci
-        ### Se esiste selezionalo e sottrai aggiungi poi a user il risultato, user['daily...']
-
     except Exception as e :
         print('Errore!\n'+str(e))
     print('\nScraping running in: ')
     print(datetime.now() - startTime)
     print('\n')
     return user
-
-def Update(url='https://playoverwatch.com/it-it/career/pc/'):
-    db=dbHelper()
-
-    users=db.getUsers()
-
-    if users!= None:
-        for u in users:
-            user={}
-            user=scraper(url,u)
-        	#	print('->',user['name'])
-
-            db.insertData(user['name'],int(user['rank']),int(user['time']),int(user['totGame']),int(user['win']),int(user['tied']),int(user['lost']))
-
-
-        print('\nScraping running in: ')
-        print(datetime.now() - startTime)
-        print('\n')
-
-
-        # 	print(user['name']+' rank:'+user['rank']+ ' time played '+user['time'] +'\n'+'w /t /l  tot'+'\n'+user['win']+'/'+user['tied']+'/'+user['lost']+' '+user['totGame'])
-    else:
-        print ('Nessun battletag trovato')
-    # print('\nTotal script running in: ')
-    # print(datetime.now() - startTime)
